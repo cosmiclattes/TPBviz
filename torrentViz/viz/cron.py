@@ -33,13 +33,13 @@ class TpbTopListCronJob(CronJobBase):
         return createdDetails
     def getSize(self):
         pass
-    def do():
+    def do(self):
         category = 'all'
-        if category in categories:
-            cat = categories[category]
+        if category in self.categories:
+            cat = self.categories[category]
         else: 
-            cat = categories['all']
-        url = base_url+'/'+cat
+            cat = self.categories['all']
+        url = self.base_url+'/'+cat
         response = urllib2.urlopen(url)
         document = html.parse(response)
         root = document.getroot()
@@ -91,7 +91,7 @@ class TpbTopListCronJob(CronJobBase):
             else:
                 torrent['user'] = 'Anonymous'
             torrent['size'] = row.cssselect('font')[0].text.split(',')[1].split(' ')[2:][0].replace(u'\xa0', ' ').encode('utf-8')
-            torrent['uploaded'] = getDate(row.cssselect('font')[0].text.split(',')[0])
+            torrent['uploaded'] = self.getDate(row.cssselect('font')[0].text.split(',')[0])
             #print torrent,seeds,leeches
             torrentList.append(torrent)
             torrentEntry, created = TPBTopList.objects.get_or_create(infoHash = torrent['infohash'])
